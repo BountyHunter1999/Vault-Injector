@@ -45,16 +45,38 @@ def read_data(path: str):
     return headings, data
 
 
+def get_value(datum: list[str], index: int, default: str = "") -> str:
+    try:
+        return datum[index]
+    except IndexError:
+        return default
+
+
+def map_data_with_headings(
+    headings: list[str], data: list[list[str]]
+) -> dict[str, str]:
+    mapped_secrets = []
+    for datum in data:
+        secrets = {}
+        for i, heading in enumerate(headings):
+            secrets[f"{heading}"] = get_value(datum, i, "")
+        mapped_secrets.append(secrets)
+    return mapped_secrets
+
+
 def main():
-    # client = get_vault_client()
+    client = get_vault_client()
     # print(client.__dir__())
     # create_or_update_secret(client, "test/test", {"test": "test"})
 
     headings, data = read_data("secrets/vault.secrets")
-    print(headings)
-    print(data, len(data))
-    for row in data:
-        print(row)
+    mapped_secrets = map_data_with_headings(headings, data)
+    print(mapped_secrets)
+
+    for secret in mapped_secrets:
+        create_or_update_secret(
+            client, f"secret/project/server/{secret[headings[0]]}", secret
+        )
 
 
 if __name__ == "__main__":
