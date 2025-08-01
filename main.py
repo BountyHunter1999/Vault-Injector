@@ -2,6 +2,7 @@ import hvac
 import sys
 import os
 import loguru
+import typer
 
 from dotenv import load_dotenv
 
@@ -12,6 +13,9 @@ def get_vault_client():
     client = hvac.Client(
         url=os.getenv("VAULT_ADDR", "http://127.0.0.1:8200"),
         token=os.getenv("VAULT_TOKEN", "root"),
+        verify=False,
+        # url="http://127.0.0.1:8200",
+        # token="root",
     )
 
     return client
@@ -64,19 +68,39 @@ def map_data_with_headings(
     return mapped_secrets
 
 
-def main():
+def main(filepath: str):
     client = get_vault_client()
     # print(client.__dir__())
     # create_or_update_secret(client, "test/test", {"test": "test"})
 
-    headings, data = read_data("secrets/vault.secrets")
+    if not os.path.exists(filepath):
+        typer.echo(f"File {filepath} does not exist")
+        return
+
+    if not filepath.endswith(".secrets"):
+        typer.echo(f"File {filepath} is not a secrets file")
+        return
+
+    filename = os.path.basename(filepath).split(".")[0]
+    typer.echo(f"Processing {filename}")
+
+    headings, data = read_data(filepath)
     mapped_secrets = map_data_with_headings(headings, data)
     print(mapped_secrets)
 
     for secret in mapped_secrets:
-        create_or_update_secret(
-            client, f"secret/project/server/{secret[headings[0]]}", secret
-        )
+        if "Root Password" in headings:
+            create_or_update_secret(
+                client,
+                f"servers/{filename}/{secret[headings[0]]}",
+                secret,
+            )
+        else:
+            create_or_update_secret(
+                client,
+                f"credentials/{filename}/{secret[headings[0]]}: {secret[headings[1]]}",
+                secret,
+            )
 
 
 if __name__ == "__main__":
