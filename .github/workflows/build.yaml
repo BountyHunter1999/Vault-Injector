@@ -12,20 +12,35 @@ jobs:
     test:
         runs-on: ubuntu-latest
 
-        services:
-            vault:
-                image: hashicorp/vault:latest
-                options: --cap-add=IPC_LOCK -v ./vault/config:/vault/config -v ./vault/data:/vault/file
-                ports:
-                    - 8200:8200
+        # services:
+        #     vault:
+        #         image: hashicorp/vault:latest
+        #         options: --cap-add=IPC_LOCK -v ./vault/config:/vault/config -v ./vault/data:/vault/file
+        #         ports:
+        #             - 8200:8200
 
         steps:
             - uses: actions/checkout@v4
+
+            - name: Setup Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Start Vault Service
+              run: |
+                mkdir -p ./vault/{config,data}
+
+                mkdir -p secrets/vault
+                docker compose up -d vault
 
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
                   python-version: 3.12
+
+            - name: Init Vault
+              run: |
+                mkdir -p secrets/vault
+                docker compose 
 
             - name: Install dependencies
               run: |
