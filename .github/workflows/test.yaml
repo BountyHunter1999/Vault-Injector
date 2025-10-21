@@ -2,7 +2,8 @@ name: Test the Vault Injector
 
 on:
     workflow_run:
-        workflows: [""]
+        workflows: ["Linting"]
+        types: [completed]
     push:
         branches:
             - main
