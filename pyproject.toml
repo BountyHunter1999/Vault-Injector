@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "hvac>=2.3.0",
     "loguru>=0.7.3",
+    "pydantic>=2.12.3",
     "python-dotenv>=1.1.1",
     "typer>=0.16.0",
 ]
