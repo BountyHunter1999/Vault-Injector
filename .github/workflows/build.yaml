@@ -11,13 +11,8 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
-
-        # services:
-        #     vault:
-        #         image: hashicorp/vault:latest
-        #         options: --cap-add=IPC_LOCK -v ./vault/config:/vault/config -v ./vault/data:/vault/file
-        #         ports:
-        #             - 8200:8200
+        env:
+            VAULT_ADDR: http://localhost:8200
 
         steps:
             - uses: actions/checkout@v4
@@ -27,10 +22,9 @@ jobs:
 
             - name: Start Vault Service
               run: |
-                mkdir -p ./vault/{config,data}
+                  mkdir -p ./vault/{config,data}
 
-                mkdir -p secrets/vault
-                docker compose up -d vault
+                  docker compose up -d vault
 
             - name: Set up Python
               uses: actions/setup-python@v4
@@ -39,8 +33,14 @@ jobs:
 
             - name: Init Vault
               run: |
-                mkdir -p secrets/vault
-                docker compose 
+                  mkdir -p secrets/vault
+                  make get-unseal-keys
+
+            - name: Create .env file
+              run: |
+                  #   export VAULT_TOKEN=$(cat secrets/vault/vault-unseal-keys.txt | grep "Initial Root Token" | awk '{print $4}')
+                  echo "VAULT_TOKEN=$(cat secrets/vault/vault-unseal-keys.txt | grep "Initial Root Token" | cut -d ":" -f2 | tr -d ' ')" > tests/.env
+                  echo "VAULT_UNSEAL_KEYS=$(grep "Unseal Key" secrets/vault/vault-unseal-keys.txt| awk '{print $4}' | paste -sd "," -)" >> tests/.env
 
             - name: Install dependencies
               run: |
