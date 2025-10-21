@@ -17,6 +17,12 @@ jobs:
 
             - name: Install the latest version of ruff
               uses: astral-sh/ruff-action@v3
-              with:
-                  # define this to override the default behaviour of check
-                  version: "latest"
+            #   with:
+            #       # define this to override the default behaviour of check
+            #       version: "latest"
+
+            - name: Ruff check
+              run: ruff check --fix
+
+            - name: Ruff format
+              run: ruff format
