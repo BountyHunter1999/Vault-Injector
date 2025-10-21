@@ -1,5 +1,4 @@
 import hvac
-import sys
 import os
 import loguru
 import typer
