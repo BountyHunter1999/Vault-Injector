@@ -1,0 +1,15 @@
+services:
+  vault:
+    image: hashicorp/vault
+    # environment:
+    #   - VAULT_
+    cap_add:
+      # allows a process to lock memory pages in RAM
+      # so that it gets written to disk only when the process is killed
+      - IPC_LOCK
+    ports:
+      - 8200:8200
+    volumes:
+      - ./vault/config:/vault/config
+      - ./vault/data:/vault/file
+    command: "vault server -config=/vault/config/vault-config.json"

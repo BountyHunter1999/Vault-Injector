@@ -8,3 +8,6 @@ run:
 
 tests:
 	uv run pytest
+
+get-unseal-keys:
+	docker compose exec vault sh -c "VAULT_ADDR=http://127.0.0.1:8200 vault operator init" >> secrets/vault/vault-unseal-keys.txt
