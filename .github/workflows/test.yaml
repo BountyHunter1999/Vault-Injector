@@ -1,6 +1,8 @@
 name: Test the Vault Injector
 
 on:
+    workflow_run:
+        workflows: [""]
     push:
         branches:
             - main

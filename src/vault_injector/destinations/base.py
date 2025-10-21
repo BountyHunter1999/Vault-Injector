@@ -15,16 +15,15 @@ class Destination(ABC):
     @staticmethod
     def _get_url():
         return os.getenv("VAULT_ADDR", "http://127.0.0.1:8200")
-    
+
     @staticmethod
     def _get_token():
         return os.getenv("VAULT_TOKEN", "root")
-    
-    
+
     @staticmethod
     def _get_unseal_keys():
         return os.getenv("VAULT_UNSEAL_KEYS", "").split(",")
-    
+
     def is_authenticated(self) -> bool:
         """
         Check if the vault is authenticated.
@@ -48,10 +47,8 @@ class Destination(ABC):
                     self.client.sys.submit_unseal_keys(keys=unseal_keys)
 
         return True
-                
-    
+
     def __enter__(self):
-        
         # if not self.client.is_authenticated():
         #     self.client.auth.unseal_vault()
         if not self.is_authenticated():
@@ -59,14 +56,14 @@ class Destination(ABC):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if hasattr(self.client, 'logout'):
+        if hasattr(self.client, "logout"):
             self.client.logout()
         self.client = None  # Clear the client to make object unusable
 
     @abstractmethod
     def put_data(self, data: Dict[str, Any]):
         raise NotImplementedError
-    
+
     def ping(self) -> bool:
         """
         Ping the destination to check if it is reachable.
@@ -74,25 +71,26 @@ class Destination(ABC):
         if self.client is None:
             loguru.logger.error("Vault client has been closed")
             return False
-            
-        return self.is_authenticated()
 
+        return self.is_authenticated()
 
     def seal_vault(self):
         self.client.sys.seal()
 
+
 class DBDestination(Destination):
     """
-    Database Related Secrets, 
-    - store database related secrets 
+    Database Related Secrets,
+    - store database related secrets
     - get new ephermal secret vault from existing secrets.
     """
+
     def __init__(self):
         super().__init__()
 
     def put_data(self, data: DBData):
         pass
-    
+
     def get_new_secret(self) -> DBTypeSecret:
         """
         Get a new ephermal secret from the database.
