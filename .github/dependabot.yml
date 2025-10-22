@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Limit number of open pull requests for version updates
+    open-pull-requests-limit: 10
+    # automatically add this label to the pull request
+    labels:
+      - "merge when passing"
