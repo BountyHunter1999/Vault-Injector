@@ -60,7 +60,7 @@ jobs:
         run: |
           mkdir -p ./vault/{config,data}
 
-          docker compose up -d vault
+          docker compose up -d vault --no-deps
           sleep 5
 
       - name: Install UV
