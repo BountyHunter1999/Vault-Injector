@@ -64,7 +64,7 @@ jobs:
           sleep 5
 
       - name: Install UV
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version-file: ".python-version"
 
