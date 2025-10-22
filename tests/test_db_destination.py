@@ -33,11 +33,11 @@ def test_db_destination():
             secret_path=f"{secret_path}/server1_postgres",
             db_engine="postgres",
             secret_data=DBData(
-                username="test",
-                password="test",
+                username=os.environ.get("POSTGRES_USER", "test"),
+                password=os.environ.get("POSTGRES_PASSWORD", "test"),
                 host=os.environ.get("POSTGRES_HOST", "host.docker.internal"),
-                port=5432,
-                database="test_db",
+                port=os.environ.get("POSTGRES_PORT", 5432),
+                database=os.environ.get("POSTGRES_DB", "test_db"),
                 sslmode="disable",
             ),
         )
