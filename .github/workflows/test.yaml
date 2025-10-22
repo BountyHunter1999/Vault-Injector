@@ -31,6 +31,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container: python:3.12-slim
     needs: lint
 
     services:
@@ -42,13 +43,6 @@ jobs:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           POSTGRES_DB: test_db
-    env:
-      VAULT_ADDR: http://localhost:8200
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: test_db
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
 
     steps:
       - uses: actions/checkout@v4
@@ -91,3 +85,10 @@ jobs:
       - name: Run tests
         run: |
           cd tests && uv run pytest
+        env:
+          VAULT_ADDR: http://localhost:8200
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
