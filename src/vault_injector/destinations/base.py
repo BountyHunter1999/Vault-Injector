@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
-from vault_injector.destinations.models import DBData, DBTypeSecret
+from vault_injector.destinations.models import DBTypeSecret
 import hvac
 import loguru
 import os
