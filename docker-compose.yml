@@ -7,7 +7,7 @@ services:
     depends_on:
       - vault
       - postgres
-    
+
     env_file:
       - tests/.env
 
@@ -25,6 +25,7 @@ services:
       - ./vault/config:/vault/config
       - ./vault/data:/vault/file
     command: "vault server -config=/vault/config/vault-config.json"
+    network_mode: host
 
   postgres:
     image: postgres:18-alpine3.22
