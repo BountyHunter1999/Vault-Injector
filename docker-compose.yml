@@ -1,4 +1,16 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # target: test
+    depends_on:
+      - vault
+      - postgres
+    
+    env_file:
+      - tests/.env
+
   vault:
     image: hashicorp/vault
     # environment:
@@ -13,3 +25,12 @@ services:
       - ./vault/config:/vault/config
       - ./vault/data:/vault/file
     command: "vault server -config=/vault/config/vault-config.json"
+
+  postgres:
+    image: postgres:18-alpine3.22
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test_db
