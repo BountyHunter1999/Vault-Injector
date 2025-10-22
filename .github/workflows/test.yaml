@@ -60,6 +60,7 @@ jobs:
         run: |
           mkdir -p ./vault/{config,data}
 
+          touch tests/.env
           docker compose up -d vault --no-deps
           sleep 5
 
